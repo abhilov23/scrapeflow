@@ -3,6 +3,7 @@ import { Separator } from '@/components/ui/separator';
 import React from 'react';
 import BreadcrumHeader from '@/components/BreadcrumHeader';
 import { ModeToggle } from '@/components/ThemeModeToggle';
+import { SignedIn, UserButton } from '@clerk/nextjs';
 
 export default function NameLayout({
   children,
@@ -15,10 +16,13 @@ export default function NameLayout({
       <div className="flex flex-col flex-1 min-h-screen">
         <header className="flex items-center justify-between px-6 py-4 h-[50px] container">
          <BreadcrumHeader/>
-         <div className='gap-1 flex items-center'>
+         <div className='gap-2 flex items-center'>
           <ModeToggle/>
+          <SignedIn>
+            <UserButton/>
+          </SignedIn>
          </div>
-        </header>
+        </header>  
         <Separator />
         <main className="flex-1 overflow-auto">
           <div className="container py-4 text-accent-foreground">

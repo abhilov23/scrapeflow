@@ -10,25 +10,32 @@ import { Breadcrumb,
 import React from "react";
 import { MobileSidebar } from "./Sidebar";
 
-
 export default function BreadcrumHeader() {
-   const pathName = usePathname();
-   const paths = pathName === '/' ? [""] : pathName?.split("/");
-
+    const pathName = usePathname();
+    const paths = pathName === "/" ? [] : pathName?.split("/").filter(Boolean);
+  
     return (
-        <div className="flex items-center flex-start">
-            <MobileSidebar/>
-            <Breadcrumb>
-            <BreadcrumbList>{paths.map((path, index)=>(
-                <React.Fragment key={index}>
-                    <BreadcrumbItem>
-                    <BreadcrumbLink className="capitalize" href={`/${path}`}>
-                    {path === "" ? "home" : path}
-                    </BreadcrumbLink>
-                    </BreadcrumbItem>
-                </React.Fragment>
-            ))}</BreadcrumbList>
-            </Breadcrumb>
-        </div>
+      <div className="flex items-center flex-start">
+        <MobileSidebar />
+        <Breadcrumb>
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink href="/">Home</BreadcrumbLink>
+            </BreadcrumbItem>
+  
+            {paths.map((path, index) => (
+              <React.Fragment key={index}>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink href={`/${path}`}>
+                    {path}
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+              </React.Fragment>
+            ))}
+          </BreadcrumbList>
+        </Breadcrumb>
+      </div>
     );
-}
+  }
+  
