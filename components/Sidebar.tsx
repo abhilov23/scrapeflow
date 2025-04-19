@@ -95,6 +95,7 @@ export function MobileSidebar(){
                                     ? "sidebarActiveItem"
                                     : "sidebarItem",
                         })}
+                        onClick={()=> setOpen((prev)=>!prev)}
                     >
                         <route.icon size={20} />
                         {route.label}
