@@ -1,10 +1,11 @@
 import NodeComponent from "@/app/(dashboard)/workflows/_components/nodes/NodeComponent";
 import { Workflow } from "@/lib/generated/prisma";
 import { CreateFlowNode } from "@/lib/workflow/createFlowNode";
+import { AppNode } from "@/types/appNode";
 import { TaskType } from "@/types/task";
 import { Background, BackgroundVariant, Controls, ReactFlow, useEdgesState, useNodesState, useReactFlow } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
-import { useEffect } from "react";
+import { useCallback, useEffect } from "react";
 
 const nodeTypes={
     FlowScrapeNode:NodeComponent,
@@ -18,9 +19,9 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
    const fitViewOptions = {padding: 1};
 
 
-    const [nodes, setNodes, onNodeChange]=useNodesState([]);
+    const [nodes, setNodes, onNodeChange]=useNodesState<AppNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-    const {setViewport} = useReactFlow();
+    const {setViewport, screenToFlowPosition} = useReactFlow();
 
     useEffect(()=>{
         try {
@@ -34,9 +35,31 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
         } catch (error) {}
     },[workflow.definition, setEdges, setNodes, setViewport]);
     
+   const onDragOver = useCallback((event: React.DragEvent)=>{
+    event.preventDefault();
+    event.dataTransfer.dropEffect="move";
+   }, [])
+
+   const onDrop = useCallback((event: React.DragEvent)=>{
+    event.preventDefault();
+    const taskType = event.dataTransfer.getData("application/reactflow");
+    if(typeof taskType === undefined || !taskType) return;
+   
+   const position=screenToFlowPosition({
+    x: event.clientX,
+    y: event.clientY
+   })
+
+    const newNode = CreateFlowNode(taskType as TaskType, position);
+    setNodes((nds) => nds.concat(newNode));
+},[])
+
+
+
     return (
         <main className="h-full w-full">
-          <ReactFlow nodes={nodes} edges={edges}
+          <ReactFlow nodes={nodes}
+          edges={edges}
           onEdgesChange={onEdgesChange}
           onNodesChange={onNodeChange}
           nodeTypes={nodeTypes}
@@ -44,6 +67,8 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
           snapGrid={snapGrid}
           fitViewOptions={fitViewOptions}
           fitView
+          onDragOver={onDragOver}
+          onDrop={onDrop}
           >
           <Controls position="top-left" fitViewOptions={fitViewOptions}/>
           <Background variant={BackgroundVariant.Dots} gap={12} size={1}/>
