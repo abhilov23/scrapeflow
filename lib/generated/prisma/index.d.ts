@@ -884,7 +884,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     description: string | null
-    defination: string | null
+    definition: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -895,7 +895,7 @@ export namespace Prisma {
     userId: string | null
     name: string | null
     description: string | null
-    defination: string | null
+    definition: string | null
     status: string | null
     createdAt: Date | null
     updatedAt: Date | null
@@ -906,7 +906,7 @@ export namespace Prisma {
     userId: number
     name: number
     description: number
-    defination: number
+    definition: number
     status: number
     createdAt: number
     updatedAt: number
@@ -919,7 +919,7 @@ export namespace Prisma {
     userId?: true
     name?: true
     description?: true
-    defination?: true
+    definition?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -930,7 +930,7 @@ export namespace Prisma {
     userId?: true
     name?: true
     description?: true
-    defination?: true
+    definition?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -941,7 +941,7 @@ export namespace Prisma {
     userId?: true
     name?: true
     description?: true
-    defination?: true
+    definition?: true
     status?: true
     createdAt?: true
     updatedAt?: true
@@ -1025,7 +1025,7 @@ export namespace Prisma {
     userId: string
     name: string
     description: string | null
-    defination: string
+    definition: string
     status: string
     createdAt: Date
     updatedAt: Date
@@ -1053,7 +1053,7 @@ export namespace Prisma {
     userId?: boolean
     name?: boolean
     description?: boolean
-    defination?: boolean
+    definition?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1064,7 +1064,7 @@ export namespace Prisma {
     userId?: boolean
     name?: boolean
     description?: boolean
-    defination?: boolean
+    definition?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1075,7 +1075,7 @@ export namespace Prisma {
     userId?: boolean
     name?: boolean
     description?: boolean
-    defination?: boolean
+    definition?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
@@ -1086,13 +1086,13 @@ export namespace Prisma {
     userId?: boolean
     name?: boolean
     description?: boolean
-    defination?: boolean
+    definition?: boolean
     status?: boolean
     createdAt?: boolean
     updatedAt?: boolean
   }
 
-  export type WorkflowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "defination" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["workflow"]>
+  export type WorkflowOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "description" | "definition" | "status" | "createdAt" | "updatedAt", ExtArgs["result"]["workflow"]>
 
   export type $WorkflowPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "Workflow"
@@ -1102,7 +1102,7 @@ export namespace Prisma {
       userId: string
       name: string
       description: string | null
-      defination: string
+      definition: string
       status: string
       createdAt: Date
       updatedAt: Date
@@ -1533,7 +1533,7 @@ export namespace Prisma {
     readonly userId: FieldRef<"Workflow", 'String'>
     readonly name: FieldRef<"Workflow", 'String'>
     readonly description: FieldRef<"Workflow", 'String'>
-    readonly defination: FieldRef<"Workflow", 'String'>
+    readonly definition: FieldRef<"Workflow", 'String'>
     readonly status: FieldRef<"Workflow", 'String'>
     readonly createdAt: FieldRef<"Workflow", 'DateTime'>
     readonly updatedAt: FieldRef<"Workflow", 'DateTime'>
@@ -1917,7 +1917,7 @@ export namespace Prisma {
     userId: 'userId',
     name: 'name',
     description: 'description',
-    defination: 'defination',
+    definition: 'definition',
     status: 'status',
     createdAt: 'createdAt',
     updatedAt: 'updatedAt'
@@ -1979,7 +1979,7 @@ export namespace Prisma {
     userId?: StringFilter<"Workflow"> | string
     name?: StringFilter<"Workflow"> | string
     description?: StringNullableFilter<"Workflow"> | string | null
-    defination?: StringFilter<"Workflow"> | string
+    definition?: StringFilter<"Workflow"> | string
     status?: StringFilter<"Workflow"> | string
     createdAt?: DateTimeFilter<"Workflow"> | Date | string
     updatedAt?: DateTimeFilter<"Workflow"> | Date | string
@@ -1990,7 +1990,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    defination?: SortOrder
+    definition?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -2005,7 +2005,7 @@ export namespace Prisma {
     userId?: StringFilter<"Workflow"> | string
     name?: StringFilter<"Workflow"> | string
     description?: StringNullableFilter<"Workflow"> | string | null
-    defination?: StringFilter<"Workflow"> | string
+    definition?: StringFilter<"Workflow"> | string
     status?: StringFilter<"Workflow"> | string
     createdAt?: DateTimeFilter<"Workflow"> | Date | string
     updatedAt?: DateTimeFilter<"Workflow"> | Date | string
@@ -2016,7 +2016,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     description?: SortOrderInput | SortOrder
-    defination?: SortOrder
+    definition?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -2033,7 +2033,7 @@ export namespace Prisma {
     userId?: StringWithAggregatesFilter<"Workflow"> | string
     name?: StringWithAggregatesFilter<"Workflow"> | string
     description?: StringNullableWithAggregatesFilter<"Workflow"> | string | null
-    defination?: StringWithAggregatesFilter<"Workflow"> | string
+    definition?: StringWithAggregatesFilter<"Workflow"> | string
     status?: StringWithAggregatesFilter<"Workflow"> | string
     createdAt?: DateTimeWithAggregatesFilter<"Workflow"> | Date | string
     updatedAt?: DateTimeWithAggregatesFilter<"Workflow"> | Date | string
@@ -2044,7 +2044,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    defination: string
+    definition: string
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -2055,7 +2055,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    defination: string
+    definition: string
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -2066,7 +2066,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    defination?: StringFieldUpdateOperationsInput | string
+    definition?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2077,7 +2077,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    defination?: StringFieldUpdateOperationsInput | string
+    definition?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2088,7 +2088,7 @@ export namespace Prisma {
     userId: string
     name: string
     description?: string | null
-    defination: string
+    definition: string
     status: string
     createdAt?: Date | string
     updatedAt?: Date | string
@@ -2099,7 +2099,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    defination?: StringFieldUpdateOperationsInput | string
+    definition?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2110,7 +2110,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
     description?: NullableStringFieldUpdateOperationsInput | string | null
-    defination?: StringFieldUpdateOperationsInput | string
+    definition?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
     updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -2170,7 +2170,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    defination?: SortOrder
+    definition?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -2181,7 +2181,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    defination?: SortOrder
+    definition?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder
@@ -2192,7 +2192,7 @@ export namespace Prisma {
     userId?: SortOrder
     name?: SortOrder
     description?: SortOrder
-    defination?: SortOrder
+    definition?: SortOrder
     status?: SortOrder
     createdAt?: SortOrder
     updatedAt?: SortOrder

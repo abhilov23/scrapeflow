@@ -4,19 +4,22 @@ import TooltipWrapper from "@/components/TooltopWrapper";
 import { Button } from "@/components/ui/button";
 import { ChevronLeftIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import SaveBtn from "./Savebtn";
+
 
 interface Props{
     title: string;
     subtitle?: string;
+    workflowId: string;
 }
 
 
-export default function Topbar({title, subtitle}:Props) {
+export default function Topbar({title, subtitle, workflowId}:Props) {
   const router = useRouter();
 
 
     return (
-        <div className="flex p-2 border-p-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10">
+        <header className="flex p-2 border-p-2 border-separate justify-between w-full h-[60px] sticky top-0 bg-background z-10">
             <div className="flex gap-1 flex-1">
                 <TooltipWrapper content="Back">
                    <Button variant={"ghost"} size={"icon"} onClick={()=> router.back()}>
@@ -33,6 +36,9 @@ export default function Topbar({title, subtitle}:Props) {
                    
                 </div>
             </div>
-        </div>
+            <div className="flex gap-1 flex-1 justify-end">
+                <SaveBtn workflowId={workflowId}/>
+            </div>
+        </header>
     );
 }
