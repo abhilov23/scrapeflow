@@ -19,4 +19,5 @@ export interface AppNode extends Node {
     param: TaskParam;
     value: string;
     updateNodeParamValue:(newValue: string) =>void;
+    
 }
