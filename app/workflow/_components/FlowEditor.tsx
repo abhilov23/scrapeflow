@@ -27,7 +27,7 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
 
 
 
-    const [nodes, setNodes, onNodeChange]=useNodesState<AppNode>([]);
+    const [nodes, setNodes, onNodesChange]=useNodesState<AppNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
     const {setViewport, screenToFlowPosition, updateNodeData} = useReactFlow();
 
@@ -60,18 +60,25 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
 
     const newNode = CreateFlowNode(taskType as TaskType, position);
     setNodes((nds) => nds.concat(newNode));
-},[])
+},[screenToFlowPosition, setNodes])
 
-const onConnect = useCallback((connection:Connection)=>{
-   setEdges(eds => addEdge({...connection, animated: false}, eds));
-   if(!connection.targetHandle) return;
-   //Remove input value if the value is present on connection
-   const node = nodes.find((nd)=>nd.id === connection.target);
-   if(!node) return;
-   const nodeInputs = node.data.inputs;
-   delete nodeInputs[connection.targetHandle];
-   updateNodeData(node.id, {inputs: nodeInputs})
-},[])
+
+
+const onConnect = useCallback((connection: Connection) => {
+    setEdges((eds) => addEdge({ ...connection, animated: false }, eds));
+  
+    if (!connection.targetHandle) return;
+  
+    const node = nodes.find((nd) => nd.id === connection.target);
+    if (!node) return;
+  
+    const nodeInputs = { ...(node.data.inputs || {}) }; // copy inputs safely
+  
+    // Instead of deleting, set the input value to an empty string
+    nodeInputs[connection.targetHandle] = "";
+  
+    updateNodeData(node.id, { inputs: nodeInputs });
+  }, [nodes, setEdges, updateNodeData]);
 
 
 
@@ -80,7 +87,7 @@ const onConnect = useCallback((connection:Connection)=>{
           <ReactFlow nodes={nodes}
           edges={edges}
           onEdgesChange={onEdgesChange}
-          onNodesChange={onNodeChange}
+          onNodesChange={onNodesChange}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
           snapToGrid={true}
