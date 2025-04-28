@@ -3,12 +3,17 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { useId, useState } from "react";
 import { ParamProps } from "@/types/appNode";
+import { Textarea } from "@/components/ui/textarea";
 
 
-export default function StringParam({param, value, updateNodeParamValue}:ParamProps) {
+export default function StringParam({param, value, updateNodeParamValue, disabled}:ParamProps) {
    const [internalValue, setInternalValue] = useState(value);
     const id = useId();
    
+   let Component:any = Input;
+   if(param.variant === "textarea"){
+    Component = Textarea;
+   }
 
 
     return (
@@ -19,8 +24,8 @@ export default function StringParam({param, value, updateNodeParamValue}:ParamPr
                 *
                 </p>}
             </Label>
-            <Input id={id} className="text-xs" value={internalValue} placeholder="Enter value here" onChange={e => setInternalValue(e.target.value)}
-            onBlur={(e)=>updateNodeParamValue(e.target.value)}
+            <Component id={id} disabled={disabled} className="text-xs" value={internalValue} placeholder="Enter value here" onChange={(e:any) => setInternalValue(e.target.value)}
+            onBlur={(e:any)=>updateNodeParamValue(e.target.value)}
             />
             {param.helperText && (
                 <p className="text-muted-foreground px-2" >

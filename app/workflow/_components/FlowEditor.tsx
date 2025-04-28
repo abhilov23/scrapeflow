@@ -29,7 +29,7 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
 
     const [nodes, setNodes, onNodeChange]=useNodesState<AppNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
-    const {setViewport, screenToFlowPosition} = useReactFlow();
+    const {setViewport, screenToFlowPosition, updateNodeData} = useReactFlow();
 
     useEffect(()=>{
         try {
@@ -64,6 +64,13 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
 
 const onConnect = useCallback((connection:Connection)=>{
    setEdges(eds => addEdge({...connection, animated: false}, eds));
+   if(!connection.targetHandle) return;
+   //Remove input value if the value is present on connection
+   const node = nodes.find((nd)=>nd.id === connection.target);
+   if(!node) return;
+   const nodeInputs = node.data.inputs;
+   delete nodeInputs[connection.targetHandle];
+   updateNodeData(node.id, {inputs: nodeInputs})
 },[])
 
 
