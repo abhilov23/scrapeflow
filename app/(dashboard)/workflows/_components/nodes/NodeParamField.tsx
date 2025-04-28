@@ -38,7 +38,7 @@ export default function NodeParamField({param, nodeId}:{
     default: 
        return (
        <div className="w-full">
-        <p className="text-xs text-muted-foreground"></p>
+        <p className="text-xs text-muted-foreground">{"Not Implemented"}</p>
        </div>
        )
    }

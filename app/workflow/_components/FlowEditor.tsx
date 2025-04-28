@@ -43,7 +43,7 @@ export default function FlowEditor({workflow}: {workflow:Workflow}) {
    const onDrop = useCallback((event: React.DragEvent)=>{
     event.preventDefault();
     const taskType = event.dataTransfer.getData("application/reactflow");
-    if(typeof taskType === "undefined" || !taskType) return;
+    if(typeof taskType === undefined || !taskType) return;
    
    const position=screenToFlowPosition({
     x: event.clientX,
