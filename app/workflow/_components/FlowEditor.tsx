@@ -7,6 +7,7 @@ import { Background, BackgroundVariant, Connection, Controls, Edge, ReactFlow, u
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect } from "react";
 import DeletableEdge from "./edges/DeletableEdge";
+import { TaskRegistry } from "@/lib/workflow/task/registry";
 
 const nodeTypes={
     FlowScrapeNode:NodeComponent,
@@ -79,7 +80,44 @@ const onConnect = useCallback((connection: Connection) => {
   
     updateNodeData(node.id, { inputs: nodeInputs });
   }, [nodes, setEdges, updateNodeData]);
+   
+  const isValidConnection=useCallback((
+    connection: Edge  | Connection
+  )=>{
+     //No self-connections allowed
+     if(connection.source === connection.target){
+      return false;
+     }
+    
+     const source = nodes.find((node)=> node.id === connection.source);
+     const target = nodes.find((node)=> node.id === connection.target);
 
+     if(!source || !target){
+      console.error("Invalid connection: source or target node not found!");
+      return false;
+     }
+
+     const sourceTask = TaskRegistry[source.data.type];
+     const targetTask = TaskRegistry[target.data.type];
+
+
+     const output = sourceTask.outputs.find(
+      (o) => o.name === connection.sourceHandle
+     )
+
+     const input = targetTask.inputs.find(
+      (o) => o.name === connection.targetHandle
+     )
+     
+     if(input?.type !== output?.type){
+      console.error("Invalid Connection: Type mismatch");
+      return false;
+     }
+       
+
+    return true;
+  },[nodes])
+  
 
 
     return (
@@ -97,6 +135,7 @@ const onConnect = useCallback((connection: Connection) => {
           onDragOver={onDragOver}
           onDrop={onDrop}
           onConnect={onConnect}
+          isValidConnection={isValidConnection}
           >
           <Controls position="top-left" fitViewOptions={fitViewOptions}/>
           <Background variant={BackgroundVariant.Dots} gap={12} size={1}/>
