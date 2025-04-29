@@ -3,7 +3,7 @@ import { Workflow } from "@/lib/generated/prisma";
 import { CreateFlowNode } from "@/lib/workflow/createFlowNode";
 import { AppNode } from "@/types/appNode";
 import { TaskType } from "@/types/task";
-import { Background, BackgroundVariant, Connection, Controls, Edge, ReactFlow, useEdgesState, useNodesState, useReactFlow, addEdge } from "@xyflow/react";
+import { Background, BackgroundVariant, Connection, Controls, Edge, ReactFlow, useEdgesState, useNodesState, useReactFlow, addEdge, getOutgoers } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import { useCallback, useEffect } from "react";
 import DeletableEdge from "./edges/DeletableEdge";
@@ -113,10 +113,22 @@ const onConnect = useCallback((connection: Connection) => {
       console.error("Invalid Connection: Type mismatch");
       return false;
      }
-       
+       const hasCycle = (node:AppNode, visited = new Set()) => {
+        if(visited.has(node.id)) return false;
+        visited.add(node.id);
+      
+         for(const outgoer of getOutgoers(node, nodes, edges)){
+          if(outgoer.id === connection.source) return true;
+          if(hasCycle(outgoer, visited)) return true;
+         }
 
-    return true;
-  },[nodes])
+      };
+
+       const detectedCycle = hasCycle(target);
+       return !detectedCycle;
+
+
+  },[nodes, edges])
   
 
 
