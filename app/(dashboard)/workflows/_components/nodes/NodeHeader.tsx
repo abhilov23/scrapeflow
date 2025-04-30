@@ -27,7 +27,7 @@ export default function NodeHeader({taskType, nodeId}:{taskType: TaskType, nodeI
              </Badge>
              {!task.isEntryPoint &&(
                 <>
-                <Button variant={"ghost"} size={"icon"} onClick={()=>{
+               <Button variant={"ghost"} size={"icon"} onClick={()=>{
                   deleteElements({
                      nodes:[{id:nodeId}]
                   })
