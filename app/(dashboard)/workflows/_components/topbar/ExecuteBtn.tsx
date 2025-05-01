@@ -1,6 +1,6 @@
 "use client"
 
-import useExecutionPlan from "@/components/hooks/useExecution";
+import useExecutionPlan from "@/components/hooks/useExecutionPlan";
 import { Button } from "@/components/ui/button";
 import { PlayIcon } from "lucide-react";
 
