@@ -8,7 +8,6 @@ import { toast } from "sonner";
 export default function useExecutionPlan() {
     const { toObject } = useReactFlow();
     const {setInvalidInputs, clearErrors} = useFlowValidation();
-    
 
     const handleError = useCallback((error:any)=>{
         console.log("Error:", error);
