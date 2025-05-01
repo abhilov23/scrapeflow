@@ -22,3 +22,8 @@ export interface AppNode extends Node {
     disabled?:boolean;
     
 }
+
+export type AppNodeMissingInputs ={
+    nodeId: string;
+    inputs: string[];
+}
