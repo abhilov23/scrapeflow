@@ -11,10 +11,15 @@ interface Props{
     title: string;
     subtitle?: string;
     workflowId: string;
+    hideButtons?:boolean;
 }
 
 
-export default function Topbar({title, subtitle, workflowId}:Props) {
+export default function Topbar({
+    title, 
+    subtitle, 
+    workflowId, 
+    hideButtons=false}:Props) {
   const router = useRouter();
 
 
@@ -37,8 +42,12 @@ export default function Topbar({title, subtitle, workflowId}:Props) {
                 </div>
             </div>
             <div className="flex gap-1 flex-1 justify-end">
+               {hideButtons == false && (
+               <>
                 <ExecuteBtn workflowId={workflowId}/>
                 <SaveBtn workflowId={workflowId}/>
+               </>
+               )}
             </div>
         </header>
     );
