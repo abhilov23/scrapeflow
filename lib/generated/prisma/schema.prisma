@@ -12,15 +12,19 @@ datasource db {
 }
 
 model Workflow {
-  id          String              @id @default(cuid())
-  userId      String
-  name        String
-  description String?
-  definition  String
-  status      String
-  createdAt   DateTime            @default(now())
-  updatedAt   DateTime            @updatedAt
-  executions  WorkflowExecution[]
+  id            String    @id @default(cuid())
+  userId        String
+  name          String
+  description   String?
+  definition    String
+  status        String
+  lastRunAt     DateTime?
+  lastRunId     String?
+  lastRunStatus String?
+
+  createdAt  DateTime            @default(now())
+  updatedAt  DateTime            @updatedAt
+  executions WorkflowExecution[]
 
   //Users cannot have two workflows with the same name
   @@unique([name, userId])
@@ -35,6 +39,8 @@ model WorkflowExecution {
   createdAt   DateTime  @default(now())
   startedAt   DateTime?
   completedAt DateTime?
+
+  creditConsumed Int @default(0)
 
   phases executionPhase[]
 

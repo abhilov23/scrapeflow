@@ -7,9 +7,11 @@ import { Separator } from '@radix-ui/react-separator';
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2Icon, LucideIcon, WorkflowIcon } from 'lucide-react';
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useState } from 'react';
 import { DatesToDurationString } from '@/lib/helper/dates';
 import { getPhasesTotalCost } from '@/lib/helper/phases';
+import { GetWorkflowPhaseDetails } from '@/actions/workflows/getWorkflowPhaseDetails';
+
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 
@@ -17,12 +19,22 @@ type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
 export default function ExecutionViewer({initialData}:{
     initialData: ExecutionData;
 }) {
+    const [selectedPhase, setSelectedPhase] = useState<string | null>(null);
+
     const query = useQuery({
         queryKey:["execution", initialData?.id],
         initialData,
         queryFn: ()=> GetWorkflowExecutionWithPhases(initialData!.id),
         refetchInterval: (q)=> q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
     })
+
+    const phaseDetails = useQuery({
+        queryKey: ["phaseDetails", selectedPhase],
+        enabled: selectedPhase !== null,
+        queryFn:()=> GetWorkflowPhaseDetails(selectedPhase!)
+    })
+
+    const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
 
     const duration = DatesToDurationString(
         query.data?.completedAt,
@@ -62,7 +74,12 @@ export default function ExecutionViewer({initialData}:{
                  <Separator/>
                  <div className='overflow-auto h-full px-2 py-4'>
                     {query.data?.phases.map((phase, index)=>(
-                        <Button key={phase.id} className='w-full justify-between' variant={"ghost"}>
+                        <Button key={phase.id} className='w-full justify-between' variant={selectedPhase === phase.id ? "secondary" : "ghost"}
+                        onClick={()=>{
+                            if(isRunning) return;
+                            setSelectedPhase(phase.id);
+                        }}
+                        >
                           <div className='flex items-center gap-2'>
                             <Badge>
                                {index + 1}
@@ -78,6 +95,11 @@ export default function ExecutionViewer({initialData}:{
                     ))}
                  </div>
             </aside>
+            <div className='flex w-full h-full'>
+                <pre>
+                    {JSON.stringify(phaseDetails.data, null, 4)}
+                </pre>
+            </div>
         </div>
     );
 }
