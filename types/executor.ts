@@ -9,3 +9,7 @@ export type Environment ={
         outputs:Record<string, string>
        }>;
 }
+
+export type ExecutionEnvironment= {
+   getInput(name:string): string;
+}

@@ -1,10 +1,11 @@
 import { waitFor } from "@/lib/helper/waitFor";
 import { Environment } from "@/types/executor";
 import puppeteer from "puppeteer";
+import { ExecutionEnvironment } from "@/types/executor";
 
-export async function LaunchBrowserExecutor(environment:any):Promise<boolean>{
+export async function LaunchBrowserExecutor(environment:ExecutionEnvironment):Promise<boolean>{
   try {
-    console.log("@@env", JSON.stringify(environment, null, 4))
+    const websiteUrl = environment.getInput("Website url");
     const browser = await puppeteer.launch({
         headless:false //for testing
     })

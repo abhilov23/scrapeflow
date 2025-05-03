@@ -7,7 +7,7 @@ import { executionPhase } from "../generated/prisma";
 import { AppNode } from "@/types/appNode";
 import { TaskRegistry } from "./task/registry";
 import { ExecutorRegistry } from "./executor/registry";
-import { Environment } from "@/types/executor";
+import { Environment, ExecutionEnvironment } from "@/types/executor";
 
 
 export async function ExecutionWorkflow(executionId: string){
@@ -172,7 +172,9 @@ async function executePhase(phase: executionPhase,
     return false;
   }
 
-  return await runFn(environment.phases[node.id]);
+  const executionEnvironment:ExecutionEnvironment = createExecutionEnvironment(node, environment);
+
+  return await runFn(executionEnvironment);
 }
 
 async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
@@ -190,5 +192,11 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
      }
 
      // Get input value from outputs in the environment
+   }
+}
+
+function createExecutionEnvironment(node: AppNode, environment: Environment){
+   return {
+    getInput:(name:string) => environment.phases[node.id].inputs[name],
    }
 }
