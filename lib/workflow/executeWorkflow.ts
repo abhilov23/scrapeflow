@@ -128,7 +128,7 @@ async function executeWorkflowPhase(phase:executionPhase, environment: Environme
     const startedAt = new Date();
     const node = JSON.parse(phase.node) as AppNode;
      
-    
+    setUpEnvironmentForPhase(node, environment);
     //update phase status
     await prisma.executionPhase.update({
         where:{
@@ -172,5 +172,23 @@ async function executePhase(phase: executionPhase,
     return false;
   }
 
-  return await runFn(environment);
+  return await runFn(environment.phases[node.id]);
+}
+
+async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
+   environment.phases[node.id] = {
+    inputs:{},
+    outputs:{}
+   };
+
+   const inputs = TaskRegistry[node.data.type].inputs;
+   for (const input of inputs){
+     const inputValue = node.data.inputs[input.name];
+     if(inputValue){
+        environment.phases[node.id].inputs[input.name] = inputValue;
+        continue;
+     }
+
+     // Get input value from outputs in the environment
+   }
 }
