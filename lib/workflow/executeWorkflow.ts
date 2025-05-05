@@ -50,7 +50,12 @@ export async function ExecutionWorkflow(executionId: string){
       
       await finalizeWorkflowExecution(executionId, execution.workflowId, executionFailed, creditConsumed);
 
-      //TODO: clean up environment
+    
+
+      await cleanUpEnvironment(environment);
+
+
+
 
       revalidatePath("/workflows/runs");
 }
@@ -147,12 +152,13 @@ async function executeWorkflowPhase(phase:executionPhase, environment: Environme
 
     //TODO: decrease user balance (with required credits)
    const success = await executePhase(phase, node, environment);
-
-    await finalizePhase(phase.id, success)
+   
+    const outputs = environment.phases[node.id].outputs;
+    await finalizePhase(phase.id, success, outputs)
     return {success};
 }
 
-async function finalizePhase(phaseId:string, success:boolean){
+async function finalizePhase(phaseId:string, success:boolean, outputs:any){
    const finalStatus = success ? ExecutionPhaseStatus.COMPLETED : ExecutionPhaseStatus.FAILED;
     
    await prisma.executionPhase.update({
@@ -162,6 +168,7 @@ async function finalizePhase(phaseId:string, success:boolean){
     data:{
         status:finalStatus,
         completedAt:new Date(),
+        outputs:JSON.stringify(outputs),
     }
    })
 }
@@ -203,6 +210,10 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
 function createExecutionEnvironment(node: AppNode, environment: Environment):ExecutionEnvironment<any>{
    return {
     getInput:(name:string) => environment.phases[node.id]?.inputs[name],
+    setOutput:(name: string, value:string)=>{
+      environment.phases[node.id].outputs[name] = value;
+     },
+
     getBrowser:()=> environment.browser,
     setBrowser:(browser:Browser) => (environment.browser = browser),
 
@@ -210,3 +221,10 @@ function createExecutionEnvironment(node: AppNode, environment: Environment):Exe
     setPage:(page:Page) => (environment.page = page),
    };
 }
+
+async function cleanUpEnvironment(environment:Environment){
+  if(environment.browser){
+    await environment.browser.close().catch((err)=> console.error("cannot close browser, reason",err))
+  }
+}
+
