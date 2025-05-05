@@ -8,6 +8,8 @@ import { AppNode } from "@/types/appNode";
 import { TaskRegistry } from "./task/registry";
 import { ExecutorRegistry } from "./executor/registry";
 import { Environment, ExecutionEnvironment } from "@/types/executor";
+import { TaskParamType } from "@/types/task";
+import { Browser, Page } from "puppeteer";
 
 
 export async function ExecutionWorkflow(executionId: string){
@@ -136,7 +138,8 @@ async function executeWorkflowPhase(phase:executionPhase, environment: Environme
         },
         data:{
             status: ExecutionPhaseStatus.RUNNING,
-            startedAt
+            startedAt,
+            inputs:JSON.stringify(environment.phases[node.id].inputs)
         }
     })
     const creditRequired = TaskRegistry[node.data.type].credits;
@@ -172,7 +175,7 @@ async function executePhase(phase: executionPhase,
     return false;
   }
 
-  const executionEnvironment:ExecutionEnvironment = createExecutionEnvironment(node, environment);
+  const executionEnvironment:ExecutionEnvironment<any> = createExecutionEnvironment(node, environment);
 
   return await runFn(executionEnvironment);
 }
@@ -186,6 +189,7 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
 
    const inputs = TaskRegistry[node.data.type].inputs;
    for (const input of inputs){
+    if(input.type === TaskParamType.BROWSER_INSTANCE) continue;
      const inputValue = node.data.inputs[input.name];
      if(inputValue){
         environment.phases[node.id].inputs[input.name] = inputValue;
@@ -196,8 +200,13 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
    }
 }
 
-function createExecutionEnvironment(node: AppNode, environment: Environment){
+function createExecutionEnvironment(node: AppNode, environment: Environment):ExecutionEnvironment<any>{
    return {
     getInput:(name:string) => environment.phases[node.id]?.inputs[name],
-   }
+    getBrowser:()=> environment.browser,
+    setBrowser:(browser:Browser) => (environment.browser = browser),
+
+    getPage:()=> environment.page,
+    setPage:(page:Page) => (environment.page = page),
+   };
 }
