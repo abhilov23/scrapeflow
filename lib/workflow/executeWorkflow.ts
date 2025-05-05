@@ -182,6 +182,7 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
     inputs:{},
     outputs:{}
    };
+   
 
    const inputs = TaskRegistry[node.data.type].inputs;
    for (const input of inputs){
@@ -197,6 +198,6 @@ async function setUpEnvironmentForPhase(node:AppNode, environment: Environment){
 
 function createExecutionEnvironment(node: AppNode, environment: Environment){
    return {
-    getInput:(name:string) => environment.phases[node.id].inputs[name],
+    getInput:(name:string) => environment.phases[node.id]?.inputs[name],
    }
 }

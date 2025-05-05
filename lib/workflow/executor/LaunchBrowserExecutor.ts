@@ -5,12 +5,13 @@ import { ExecutionEnvironment } from "@/types/executor";
 
 export async function LaunchBrowserExecutor(environment:ExecutionEnvironment):Promise<boolean>{
   try {
-    const websiteUrl = environment.getInput("Website url");
+    const websiteUrl = environment.getInput("Website Url");
+    console.log("@@WEBSITE_URL:",websiteUrl)
     const browser = await puppeteer.launch({
         headless:false //for testing
     })
     await waitFor(3000)
-    await browser.close();
+    await browser.close();  
     return true;
   } catch (error) {
     console.log(error)
