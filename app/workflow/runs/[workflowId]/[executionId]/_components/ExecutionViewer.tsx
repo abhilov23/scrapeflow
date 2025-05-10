@@ -2,7 +2,7 @@
 import GetWorkflowExecutionWithPhases from '@/actions/workflows/getWorkflowExecutionWithPhases';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { WorkflowExecutionStatus } from '@/types/workflow';
+import { ExecutionPhaseStatus, WorkflowExecutionStatus } from '@/types/workflow';
 import { Separator } from '@radix-ui/react-separator';
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
@@ -18,6 +18,7 @@ import { ExecutionLog } from '@/lib/generated/prisma';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 import { LogLevel } from '@/types/log';
+import { PhaseStatusBadge } from './PhaseStatusBadge';
 
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
@@ -95,9 +96,7 @@ export default function ExecutionViewer({initialData}:{
                                 {phase.name}
                             </p>
                             </div>
-                            <p className='text-xs text-muted-foreground'>
-                                {phase.status}
-                            </p>
+                            <PhaseStatusBadge status={phase.status as ExecutionPhaseStatus} />
                         </Button>
                     ))}
                  </div>
