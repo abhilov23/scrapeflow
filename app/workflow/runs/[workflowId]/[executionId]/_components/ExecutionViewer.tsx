@@ -7,7 +7,7 @@ import { Separator } from '@radix-ui/react-separator';
 import { useQuery } from '@tanstack/react-query';
 import { formatDistanceToNow } from 'date-fns';
 import { CalendarIcon, CircleDashedIcon, ClockIcon, CoinsIcon, Loader2Icon, LucideIcon, WorkflowIcon } from 'lucide-react';
-import React, { ReactNode, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { DatesToDurationString } from '@/lib/helper/dates';
 import { getPhasesTotalCost } from '@/lib/helper/phases';
 import { GetWorkflowPhaseDetails } from '@/actions/workflows/getWorkflowPhaseDetails';
@@ -33,7 +33,7 @@ export default function ExecutionViewer({initialData}:{
         queryKey:["execution", initialData?.id],
         initialData,
         queryFn: ()=> GetWorkflowExecutionWithPhases(initialData!.id),
-        refetchInterval: (q)=> q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 1000 : false,
+        refetchInterval: (q)=> q.state.data?.status === WorkflowExecutionStatus.RUNNING ? 5000 : false,
     })
 
     const phaseDetails = useQuery({
@@ -43,6 +43,23 @@ export default function ExecutionViewer({initialData}:{
     })
 
     const isRunning = query.data?.status === WorkflowExecutionStatus.RUNNING;
+    
+    useEffect(()=>{
+        // while running we auto-select the current running phase in the sidebar
+        const phases = query.data?.phases || [];
+        if(isRunning){
+            //select last execution phase
+            const phaseToSelect = phases.toSorted((a,b)=> a.startedAt! > b.startedAt! ? -1 : 1)[0];
+            setSelectedPhase(phaseToSelect.id);
+            return;
+        }
+       const phaseToSelect = phases.toSorted((a,b)=> a.completedAt! > b.completedAt! ? -1 : 1)[0]; 
+       setSelectedPhase(phaseToSelect.id);
+
+        
+
+    },[query.data?.phases, isRunning, setSelectedPhase])
+
 
     const duration = DatesToDurationString(
         query.data?.completedAt,
