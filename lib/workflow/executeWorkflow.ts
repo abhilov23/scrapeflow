@@ -199,6 +199,7 @@ async function executePhase(phase: executionPhase,
      environment:Environment,
      logCollector:LogCollector
      ):Promise<boolean>{
+        await waitFor(3000)
   const runFn = ExecutorRegistry[node.data.type];
   if(!runFn){
     return false;

@@ -19,6 +19,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { cn } from '@/lib/utils';
 import { LogLevel } from '@/types/log';
 import { PhaseStatusBadge } from './PhaseStatusBadge';
+import ReactCountUpWrapper from '@/components/ReactCountUpWrapper';
 
 
 type ExecutionData = Awaited<ReturnType<typeof GetWorkflowExecutionWithPhases>>;
@@ -87,7 +88,7 @@ export default function ExecutionViewer({initialData}:{
                    }
                    />
                 <ExecutionLabel icon={ClockIcon} label="Duration" value={duration ? duration: <Loader2Icon className='animate-spin' size={20}/>}/>
-                <ExecutionLabel icon={CoinsIcon} label="Credits Consumed" value={creditConsumed}/>
+                <ExecutionLabel icon={CoinsIcon} label="Credits Consumed" value={<ReactCountUpWrapper value={creditConsumed}/>}/>
                 </div>  
                  <Separator/>
                  <div className='flex justify-center items-center py-2 px-4'>
@@ -144,7 +145,7 @@ export default function ExecutionViewer({initialData}:{
                             <CoinsIcon size={18} className='stroke-muted-foreground'/>
                             <span>Credits</span>
                             </div>
-                            <span>TODO</span>
+                            <span>{phaseDetails.data.creditsConsumed}</span>
                          </Badge>
                           <Badge variant={'outline'} className='space-x-4'>
                           <div className='flex gap-1 items-center'>
