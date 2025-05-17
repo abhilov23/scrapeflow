@@ -74,7 +74,12 @@ export default function ExecutionViewer({initialData}:{
             <aside className='w-[320px] min-w-[320px] max-w-[320px] border-r-2 border-separate flex flex-grow flex-col overflow-hidden'>
              <div className='py-4 px-2'>
                 {/*Status label */}
-               <ExecutionLabel icon={CircleDashedIcon} label="status" value={query.data?.status}/>
+               <ExecutionLabel icon={CircleDashedIcon} label="status" value={
+                <div className='font-semibold capitalize flex gap-2 items-center'>
+                <PhaseStatusBadge status={query.data?.status as ExecutionPhaseStatus}/>
+                <span>{query.data?.status}</span>
+               </div>
+            }/>
                 {/*Started At label */}
                 <ExecutionLabel 
                  icon={CalendarIcon} 

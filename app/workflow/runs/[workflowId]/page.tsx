@@ -57,5 +57,7 @@ async function ExecutionsTableWrapper({workflowId}:{
     )
     }
 
-    return <ExecutionsTable workflowId={workflowId} initialData={executions}/>
+    return <div className="container py-6 w-full"> 
+         <ExecutionsTable workflowId={workflowId} initialData={executions}/>
+    </div>
 }

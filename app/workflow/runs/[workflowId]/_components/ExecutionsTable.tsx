@@ -8,6 +8,9 @@ import { DatesToDurationString } from '@/lib/helper/dates';
 import { Badge } from '@/components/ui/badge';
 import ExecutionStatusIndicator from './ExecutionStatusIndicator';
 import { WorkflowExecutionStatus } from '@/types/workflow';
+import { CoinsIcon } from 'lucide-react';
+import { formatDistanceToNow } from 'date-fns';
+import { useRouter } from 'next/navigation';
 
 
 type InitialDataType = Awaited<ReturnType<typeof GetWorkflowExecutions>>;
@@ -23,6 +26,9 @@ function ExecutionsTable({workflowId, initialData}:{
         queryFn: ()=>GetWorkflowExecutions(workflowId),
         refetchInterval: 5000,
     })
+    
+    const router = useRouter();
+
   return (
     <div className='border rounded-lg shadow-md overflow-auto'> 
        <Table className='h-full'>
@@ -37,7 +43,14 @@ function ExecutionsTable({workflowId, initialData}:{
         <TableBody className='gap-2 h-full overflow-auto'> 
            {query.data.map((execution)=>{ 
             const duration = DatesToDurationString(execution.completedAt, execution.startedAt)
-            return (<TableRow key={execution.id}> 
+            
+            const formattedStartedAt = execution.startedAt && formatDistanceToNow(execution.startedAt, {
+                addSuffix: true
+            });
+
+            return (<TableRow key={execution.id} className='cursor-pointer' onClick={()=>{
+                router.push(`/workflow/runs/${execution.workflowId}/${execution.id}`)
+            }}> 
                 <TableCell>
                     <div className='flex flex-col'>
                         <span className='font-semibold'>{execution.id}</span>
@@ -48,13 +61,25 @@ function ExecutionsTable({workflowId, initialData}:{
                          </div>
                 </TableCell>
                 <TableCell> 
-                    <div> 
+                    <div className='flex flex-col'> 
                         <div className='flex gap-2 items-center'>
                             <ExecutionStatusIndicator status={execution.status as WorkflowExecutionStatus}/>
                             <span className='font-semibold capitalize'>{execution.status}</span>
                         </div>
-                        <div>{duration}</div>
+                        <div className='text-muted-foreground text-xs mx-5'>{duration}</div>
                     </div>
+                </TableCell>
+                 <TableCell> 
+                    <div className='flex flex-col'> 
+                        <div className='flex gap-2 items-center'>
+                              <CoinsIcon size={16} className='text-primary'/>
+                            <span className='font-semibold capitalize'>{execution.creditConsumed}</span>
+                        </div>
+                        <div className='text-muted-foreground text-xs mx-5'>credits</div>
+                    </div>
+                </TableCell>
+                <TableCell className='text-right text-muted-foreground'> 
+                 {formattedStartedAt}
                 </TableCell>
             </TableRow>)
            })}
