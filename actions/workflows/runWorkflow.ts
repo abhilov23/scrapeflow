@@ -3,7 +3,7 @@
 import prisma from "@/lib/prisma";
 import { FlowToExecutionPlan } from "@/lib/workflow/executionPlan";
 import { TaskRegistry } from "@/lib/workflow/task/registry";
-import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowExecutionTrigger } from '@/types/workflow';
+import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowExecutionTrigger, WorkflowStatus } from '@/types/workflow';
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ExecutionWorkflow } from "@/lib/workflow/executeWorkflow";
@@ -36,8 +36,17 @@ export default async function runWorkflow(form: {
     }
 
     let executionPlan:WorkflowExecutionPlan;
+    if(workflow.status === WorkflowStatus.PUBLISHED){
+        if(!workflow.executionPlan){
+            throw new Error("no execution plan found in published workflow");
+        }
+        executionPlan = JSON.parse(workflow.executionPlan)
+    } else {
+        //workflow is a draft
+
+        
     if(!flowDefinition){
-        throw new Error("flow definition is not defined");
+      throw new Error("flow definition is not defined");
     }
     
     const flow = JSON.parse(flowDefinition);
@@ -51,6 +60,8 @@ export default async function runWorkflow(form: {
     }
 
     executionPlan = result.executionPlan;
+
+    }
 
     const execution = await prisma.workflowExecution.create({
         data:{

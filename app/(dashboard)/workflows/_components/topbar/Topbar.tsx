@@ -14,6 +14,7 @@ interface Props{
     subtitle?: string;
     workflowId: string;
     hideButtons?:boolean;
+    isPublished?:boolean;
 }
 
 
@@ -21,7 +22,9 @@ export default function Topbar({
     title, 
     subtitle, 
     workflowId, 
-    hideButtons=false}:Props) {
+    hideButtons=false,
+    isPublished = false
+}:Props) {
   const router = useRouter();
 
 
@@ -47,8 +50,13 @@ export default function Topbar({
                {hideButtons == false && (
                <>
                 <ExecuteBtn workflowId={workflowId}/>
+                {!isPublished && (
+                   <>
                 <SaveBtn workflowId={workflowId}/>
                 <PublishBtn workflowId={workflowId} />
+                </> 
+                )}
+                
                </>
                )}
             </div>
