@@ -50,7 +50,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
                             </span>
                         )}
                     </h3>
-                    <ScheduleSection isDraft={isDraft} creditsCost={workflow.creditsCost}/>
+                    <ScheduleSection isDraft={isDraft} creditsCost={workflow.creditsCost} workflowId={workflow.id}/>
                 </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -116,15 +116,16 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
 }
 
 
-function ScheduleSection({isDraft, creditsCost}:{
+function ScheduleSection({isDraft, creditsCost, workflowId}:{
   isDraft:boolean;
   creditsCost:number;
+  workflowId:string;
 }){
   if(isDraft) return null;
 
   return <div className="flex items-center gap-2"> 
     <CornerDownRightIcon className="h-4 w-4 text-muted-foreground" />
-    <SchedulerDialog />
+    <SchedulerDialog workflowId={workflowId} />
     <MoveRightIcon className="h-4 w-4 text-muted-foreground" />
     <TooltipWrapper content="Credit consumption for full run"> 
       <div className="flex items-center gap-3 ">
