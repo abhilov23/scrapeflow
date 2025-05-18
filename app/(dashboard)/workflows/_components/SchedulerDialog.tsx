@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { CalendarIcon, TriangleAlertIcon } from 'lucide-react';
+import { CalendarIcon, ClockIcon, TriangleAlertIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import CustomDialogHeader from '@/components/CustomDialogHeader';
@@ -14,11 +14,12 @@ import cronstrue from "cronstrue";
 
 
 
-const SchedulerDialog = ({workflowId}:{
+const SchedulerDialog = (props:{
     workflowId:string;
+    cron:string | null;
 }) => {
 
-    const [cron, setCron] = useState("");
+    const [cron, setCron] = useState(props.cron || "");
     const [validCron, setValidCron] = useState(false)
     const [readableCron, setReadableCron] = useState("")
 
@@ -42,14 +43,29 @@ const SchedulerDialog = ({workflowId}:{
     }
   },[cron])
 
+  const workflowHasValidCron = props.cron && props.cron.length > 0;
+  const readableSavedCron = workflowHasValidCron && cronstrue.toString(props.cron!);
+
+
+
   return (
     <Dialog>
         <DialogTrigger asChild> 
-            <Button variant={"link"} size={"sm"} className={cn("text-sm p-0 h-auto")}>
-           <div className='flex items-center gap-1'> 
+            <Button variant={"link"} size={"sm"} className={cn("text-sm p-0 h-auto text-orange-500",
+                workflowHasValidCron && "text-primary"
+            )}>
+                {workflowHasValidCron && 
+                <div className='flex items-center gap-2'> 
+                    <ClockIcon/>
+                    {readableSavedCron}
+                    </div>
+                    }
+                    {!workflowHasValidCron && 
+        <div className='flex items-center gap-1'> 
           <TriangleAlertIcon className='h-3 w-3'/>
              Set Schedule
-            </div>
+        </div>
+                    }
          </Button>
         </DialogTrigger>
         <DialogContent className='px-0'> 
@@ -77,7 +93,7 @@ const SchedulerDialog = ({workflowId}:{
                 onClick={()=>{
                     toast.loading("Saving...", {id:"cron"})
                     mutation.mutate({
-                        id:workflowId,
+                        id:props.workflowId,
                         cron
                     })
                 }}> 
