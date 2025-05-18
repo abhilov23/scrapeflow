@@ -1,11 +1,11 @@
 "use client";
 
-import { ReactNode } from "react";
+import React, { ReactNode } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 interface Props {
-    children: ReactNode;
-    content: ReactNode;
+    children: React.ReactNode;
+    content: React.ReactNode;
     side?:"top" | "bottom" | "left" | "right";
 }
 

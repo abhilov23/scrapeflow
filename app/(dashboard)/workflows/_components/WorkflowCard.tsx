@@ -3,7 +3,7 @@
 import { Workflow } from "@/lib/generated/prisma";
 import { Card, CardContent } from "@/components/ui/card";
 import { WorkflowStatus } from "@/types/workflow";
-import { FileTextIcon, MoreVertical, MoreVerticalIcon, PlayIcon, ShuffleIcon, Trash2Icon, TrashIcon } from "lucide-react";
+import { CoinsIcon, CornerDownRightIcon, FileTextIcon, MoreVertical, MoreVerticalIcon, MoveRightIcon, PlayIcon, ShuffleIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -12,6 +12,8 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { useState } from "react";
 import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
 import RunBtn from "./RunBtn";
+import SchedulerDialog from "./SchedulerDialog";
+import { Badge } from "@/components/ui/badge";
 
 
 
@@ -48,6 +50,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
                             </span>
                         )}
                     </h3>
+                    <ScheduleSection isDraft={isDraft} creditsCost={workflow.creditsCost}/>
                 </div>
             </div>
             <div className="flex items-center space-x-2">
@@ -110,4 +113,26 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
       </>
       
     );
+}
+
+
+function ScheduleSection({isDraft, creditsCost}:{
+  isDraft:boolean;
+  creditsCost:number;
+}){
+  if(isDraft) return null;
+
+  return <div className="flex items-center gap-2"> 
+    <CornerDownRightIcon className="h-4 w-4 text-muted-foreground" />
+    <SchedulerDialog />
+    <MoveRightIcon className="h-4 w-4 text-muted-foreground" />
+    <TooltipWrapper content="Credit consumption for full run"> 
+      <div className="flex items-center gap-3 ">
+        <Badge variant={"outline"} className="space-x-2 text-muted-foreground rounded-sm">
+        <CoinsIcon className="h-4 w-4"/>
+        <span className="text-sm">{creditsCost}</span>
+        </Badge>
+      </div>
+    </TooltipWrapper>
+  </div>
 }
