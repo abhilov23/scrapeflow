@@ -11,6 +11,7 @@ import TooltipWrapper from "@/components/TooltopWrapper";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { useState } from "react";
 import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
+import RunBtn from "./RunBtn";
 
 
 
@@ -50,6 +51,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
                 </div>
             </div>
             <div className="flex items-center space-x-2">
+              {!isDraft && <RunBtn workflowId={workflow.id}/>}
             <Link href={`/workflow/editor/${workflow.id}`} className={cn(buttonVariants({
                 variant:"outline",
                 size:"sm"
