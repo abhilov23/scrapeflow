@@ -14,7 +14,7 @@ import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
 import RunBtn from "./RunBtn";
 import SchedulerDialog from "./SchedulerDialog";
 import { Badge } from "@/components/ui/badge";
-import ExecutionStatusIndicator from "@/app/workflow/runs/[workflowId]/_components/ExecutionStatusIndicator";
+import ExecutionStatusIndicator, { ExecutionStatusLabel } from "@/app/workflow/runs/[workflowId]/_components/ExecutionStatusIndicator";
 import { format, formatDistanceToNow } from "date-fns";
 import {formatInTimeZone} from "date-fns-tz";
 
@@ -144,7 +144,13 @@ function ScheduleSection({isDraft, creditsCost, workflowId, cron}:{
 
 
 function LastRunDetails({workflow}:{workflow: Workflow}){
-   const {lastRunAt, lastRunStatus, lastRunId, nextRunAt} = workflow;
+   const isDraft = workflow.status === WorkflowStatus.DRAFT;
+   if(isDraft){
+    return null;
+   }
+
+
+  const {lastRunAt, lastRunStatus, lastRunId, nextRunAt} = workflow;
    const formattedStartedAt = lastRunAt && formatDistanceToNow(lastRunAt,{
     addSuffix: true
    });
@@ -157,7 +163,8 @@ function LastRunDetails({workflow}:{workflow: Workflow}){
       {lastRunAt && <Link href={`/workflow/runs/${workflow.id}/${lastRunId}`} className="flex items-center text-sm gap-2 group">
       <span>Last Run:</span>
       <ExecutionStatusIndicator  status={lastRunStatus as WorkflowExecutionStatus}/>
-      <span>{lastRunStatus}</span>
+            <ExecutionStatusLabel  status={lastRunStatus as WorkflowExecutionStatus}/>
+
       <span>{formattedStartedAt}</span>
       <ChevronRightIcon size={14} className="-translate-x-[2px] group-hover:translate-x-0 transition"/>
       </Link>}
@@ -169,7 +176,7 @@ function LastRunDetails({workflow}:{workflow: Workflow}){
       <ClockIcon/>
       <span>Next Run At</span>
       <span>{nextSchedule}</span>
-      <span>{nextScheduleUtc}</span>
+      <span className="text-xs">({nextScheduleUtc} UTC)</span>
       </div>}
    </div>
 }
