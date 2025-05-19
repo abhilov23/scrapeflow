@@ -2,8 +2,8 @@
 
 import { Workflow } from "@/lib/generated/prisma";
 import { Card, CardContent } from "@/components/ui/card";
-import { WorkflowStatus } from "@/types/workflow";
-import { CoinsIcon, CornerDownRightIcon, FileTextIcon, MoreVertical, MoreVerticalIcon, MoveRightIcon, PlayIcon, ShuffleIcon, Trash2Icon, TrashIcon } from "lucide-react";
+import { WorkflowExecutionStatus, WorkflowStatus } from "@/types/workflow";
+import { ChevronRightIcon, ClockIcon, CoinsIcon, CornerDownRightIcon, FileTextIcon, MoreVertical, MoreVerticalIcon, MoveRightIcon, PlayIcon, ShuffleIcon, Trash2Icon, TrashIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Button, buttonVariants } from "@/components/ui/button";
@@ -14,7 +14,9 @@ import DeleteWorkflowDialog from "./DeleteWorkflowDialog";
 import RunBtn from "./RunBtn";
 import SchedulerDialog from "./SchedulerDialog";
 import { Badge } from "@/components/ui/badge";
-
+import ExecutionStatusIndicator from "@/app/workflow/runs/[workflowId]/_components/ExecutionStatusIndicator";
+import { format, formatDistanceToNow } from "date-fns";
+import {formatInTimeZone} from "date-fns-tz";
 
 
 const statusColors = {
@@ -67,6 +69,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
                         <WorkflowActions workflowName={workflow.name} workflowId={workflow.id}/>
             </div>
             </CardContent>
+            <LastRunDetails workflow={workflow} />
         </Card>
     );
 }
@@ -126,7 +129,7 @@ function ScheduleSection({isDraft, creditsCost, workflowId, cron}:{
 
   return <div className="flex items-center gap-2"> 
     <CornerDownRightIcon className="h-4 w-4 text-muted-foreground" />
-    <SchedulerDialog workflowId={workflowId} cron={cron} />
+    <SchedulerDialog workflowId={workflowId} cron={cron} key={`${cron}-${workflowId}`} />
     <MoveRightIcon className="h-4 w-4 text-muted-foreground" />
     <TooltipWrapper content="Credit consumption for full run"> 
       <div className="flex items-center gap-3 ">
@@ -137,4 +140,36 @@ function ScheduleSection({isDraft, creditsCost, workflowId, cron}:{
       </div>
     </TooltipWrapper>
   </div>
+}
+
+
+function LastRunDetails({workflow}:{workflow: Workflow}){
+   const {lastRunAt, lastRunStatus, lastRunId, nextRunAt} = workflow;
+   const formattedStartedAt = lastRunAt && formatDistanceToNow(lastRunAt,{
+    addSuffix: true
+   });
+
+    const nextSchedule = nextRunAt && format(nextRunAt, "yyyy-MM-dd HH:mm");   
+    const nextScheduleUtc = nextRunAt && formatInTimeZone(nextRunAt, "UTC", "HH:mm");
+
+   return <div className="bg-primary/5 px-4 py-1 flex justify-between items-center text-muted-foreground"> 
+    <div className="flex items-center text-sm gap-2"> 
+      {lastRunAt && <Link href={`/workflow/runs/${workflow.id}/${lastRunId}`} className="flex items-center text-sm gap-2 group">
+      <span>Last Run:</span>
+      <ExecutionStatusIndicator  status={lastRunStatus as WorkflowExecutionStatus}/>
+      <span>{lastRunStatus}</span>
+      <span>{formattedStartedAt}</span>
+      <ChevronRightIcon size={14} className="-translate-x-[2px] group-hover:translate-x-0 transition"/>
+      </Link>}
+      {!lastRunAt && <p>
+        No runs yet
+        </p>}
+    </div>
+    {nextRunAt && <div className="flex items-center text-sm gap-2"> 
+      <ClockIcon/>
+      <span>Next Run At</span>
+      <span>{nextSchedule}</span>
+      <span>{nextScheduleUtc}</span>
+      </div>}
+   </div>
 }

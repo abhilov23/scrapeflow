@@ -6,7 +6,7 @@ import { TaskRegistry } from "@/lib/workflow/task/registry";
 import { ExecutionPhaseStatus, WorkflowExecutionPlan, WorkflowExecutionStatus, WorkflowExecutionTrigger, WorkflowStatus } from '@/types/workflow';
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { ExecutionWorkflow } from "@/lib/workflow/executeWorkflow";
+import { ExecuteWorkflow } from "@/lib/workflow/executeWorkflow";
 
 
 export default async function runWorkflow(form: {
@@ -98,7 +98,7 @@ export default async function runWorkflow(form: {
     }
     
 
-    ExecutionWorkflow(execution.id); //run this on background
+    ExecuteWorkflow(execution.id); //run this on background
     redirect(`/workflow/runs/${workflowId}/${execution.id}`)
 }
 

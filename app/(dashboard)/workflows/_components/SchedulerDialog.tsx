@@ -11,7 +11,9 @@ import { useMutation } from '@tanstack/react-query';
 import { UpdateWorkflowCron } from '@/actions/workflows/updateWorkflowCron';
 import { toast } from 'sonner';
 import cronstrue from "cronstrue";
-
+import parser from "cron-parser";
+import { RemoveWorkflowSchedule } from '@/actions/workflows/removeWorkflowSchedule';
+import { Separator } from '@/components/ui/separator';
 
 
 const SchedulerDialog = (props:{
@@ -32,9 +34,23 @@ const SchedulerDialog = (props:{
         toast.error("something went wrong",{id:"cron"})
     }
   })
+  
+    const removeScheduleMutation = useMutation({
+    mutationFn: RemoveWorkflowSchedule,
+    onSuccess:()=>{
+        toast.success("Schedule updated successfully", {id:"cron"})
+    },
+    onError:()=>{
+        toast.error("something went wrong",{id:"cron"})
+    }
+  })
+
+  
+
 
   useEffect(()=>{
     try {
+        parser.parseExpression(cron);
         const humanCronStr = cronstrue.toString(cron);
         setValidCron(true);
         setReadableCron(humanCronStr);
@@ -80,6 +96,21 @@ const SchedulerDialog = (props:{
                 )}>
                     {validCron ? readableCron : "Not a valid cron expression"}
                 </div>
+               {workflowHasValidCron && <DialogClose asChild> 
+               <div> 
+                <Button className='w-full text-destructive border-destructive hover:text-destructive' variant={"outline"}
+                disabled={ mutation.isPending || removeScheduleMutation.isPending}
+                onClick={()=>{
+                    toast.loading("Remove Schedule...",{id:"cron"})
+                    removeScheduleMutation.mutate(props.workflowId) 
+                }}
+                > 
+                    Remove Current Schedule
+                </Button>
+                <Separator className='my-4'/>
+               </div>
+                </DialogClose>}
+
             </div>
             <DialogFooter className='px-6 gap-2'> 
                <DialogClose asChild> 
@@ -89,7 +120,7 @@ const SchedulerDialog = (props:{
                </DialogClose>
                <DialogClose asChild> 
                 <Button className='w-full'
-                disabled={mutation.isPending}
+                disabled={mutation.isPending || !validCron}
                 onClick={()=>{
                     toast.loading("Saving...", {id:"cron"})
                     mutation.mutate({
