@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import ExecutionStatusIndicator, { ExecutionStatusLabel } from "@/app/workflow/runs/[workflowId]/_components/ExecutionStatusIndicator";
 import { format, formatDistanceToNow } from "date-fns";
 import {formatInTimeZone} from "date-fns-tz";
+import DuplicateWorkflowDialog from "./DuplicateWorkflowDialog";
 
 
 const statusColors = {
@@ -31,7 +32,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
     
     
     return (
-        <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-md dark:shadow-primary/50">
+        <Card className="border border-separate shadow-sm rounded-lg overflow-hidden hover:shadow-md dark:shadow-primary/30 group/card">
             <CardContent className="p-4 flex items-center justify-between h-[100px]">
                <div className="flex items-center justify-end space-x-3">
                 <div className={cn("w-10 h-10 rounded-full flex items-center justify-center",
@@ -51,6 +52,7 @@ export default function WorkflowCard({workflow}:{workflow:Workflow}) {
                               Draft
                             </span>
                         )}
+                        <DuplicateWorkflowDialog workflowId={workflow.id} />
                     </h3>
                     <ScheduleSection isDraft={isDraft} creditsCost={workflow.creditsCost} workflowId={workflow.id} cron={workflow.cron}/>
                 </div>
