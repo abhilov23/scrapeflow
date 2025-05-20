@@ -8,6 +8,7 @@ import { TaskParam, TaskParamType } from "@/types/task";
 import { useReactFlow } from "@xyflow/react";
 import { useCallback } from "react";
 import BrowserInstanceParam from "./param/BrowserInstanceParam";
+import SelectParam from "./param/SelectParam";
 
 export default function NodeParamField({param, nodeId, disabled}:{
     param:  TaskParam;
@@ -42,6 +43,13 @@ export default function NodeParamField({param, nodeId, disabled}:{
             param={param}
             value={""}
             updateNodeParamValue={updateNodeParamValue}
+            />;
+        case TaskParamType.SELECT:
+            return <SelectParam 
+            param={param}
+            value={value}
+            updateNodeParamValue={updateNodeParamValue}
+            disabled={disabled}
             />;
 
     default: 
