@@ -10,7 +10,7 @@ import React from "react";
 export default function TaskMenu() {
     return (
         <aside className="w-[240px] min-w-[240px] max-w-[240px] border-r-2 border-separate h-full p-2 px-4 overflow-auto">
-          <Accordion type="multiple" className="w-full" defaultValue={["extraction","interactions","timing", "results"]}>
+          <Accordion type="multiple" className="w-full" defaultValue={["extraction","interactions","timing", "results", "storage"]}>
            
             <AccordionItem value="interactions">
               <AccordionTrigger className="font-bold">
@@ -39,6 +39,16 @@ export default function TaskMenu() {
             <TaskMenuBtn taskType={TaskType.WAIT_FOR_ELEMENT}/>  
             </AccordionContent>
             </AccordionItem>
+
+            <AccordionItem value="storage">
+              <AccordionTrigger className="font-bold">
+                Data Storage
+              </AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-1">
+            <TaskMenuBtn taskType={TaskType.READ_PROPERTY_FROM_JSON}/>  
+            </AccordionContent>
+            </AccordionItem>
+
 
               <AccordionItem value="results">
               <AccordionTrigger className="font-bold">

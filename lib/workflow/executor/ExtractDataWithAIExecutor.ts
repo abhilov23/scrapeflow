@@ -71,9 +71,14 @@ export async function ExtractDataWithAIExecutor(environment:ExecutionEnvironment
 
     console.log("@@TOKENS_USED", response.usage?.prompt_tokens);
     console.log("@@TOKENS_USED", response.usage?.completion_tokens);
-s
+    
+    const result = response.choices[0].message.content;
+    if(!result){
+      environment.log.error("Failed to extract data with AI");
+      return false;
+    }
 
-
+    environment.setOutput("Extracted Data", result);    
 
 
     return true;
