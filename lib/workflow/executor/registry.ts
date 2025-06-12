@@ -11,6 +11,7 @@ import { DeliverViaWebhookExecutor } from "./DeliverViaWebhookExecutor";
 import { ExtractDataWithAIExecutor } from "./ExtractDataWithAIExecutor";
 import { ReadPropertyFromExecutorJson } from "./ReadPropertyFromJsonExecutor";
 import { AddPropertyFromExecutorJson } from "./AddPropertyToJsonExecutor";
+import { NavigateUrlExecutor } from "./NavigateUrlExecutor";
  
 type ExecutorFn<T extends WorkflowTask> = (environment: ExecutionEnvironment<T>)=> Promise<boolean>;
 
@@ -30,5 +31,6 @@ export const ExecutorRegistry:RegistryType = {
     DELIVER_VIA_WEBHOOK: DeliverViaWebhookExecutor,
     EXTRACT_DATA_WITH_AI: ExtractDataWithAIExecutor,
     READ_PROPERTY_FROM_JSON: ReadPropertyFromExecutorJson,
-    ADD_PROPERTY_TO_JSON: AddPropertyFromExecutorJson
+    ADD_PROPERTY_TO_JSON: AddPropertyFromExecutorJson,
+    NAVIGATE_URL: NavigateUrlExecutor
 }
