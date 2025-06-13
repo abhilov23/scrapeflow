@@ -27,7 +27,7 @@ export async function GetPeriods(){
 
 
   for(let year = minYear; year <= currentYear; year++){
-    for(let month = 1; month <= 12; month++){
+    for(let month = 0; month <= 11; month++){
         periods.push({year, month});
     }
   }
