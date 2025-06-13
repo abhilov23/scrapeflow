@@ -1,3 +1,4 @@
+import { GetPeriods } from "@/actions/analytics/getPeriods";
 
 export default function HomePage() {
     return (
@@ -6,3 +7,11 @@ export default function HomePage() {
         </div>
     );
 }
+
+
+async function PeriodSelectorWrapper(){
+   const periods = await GetPeriods();
+   return <pre>{JSON.stringify(PeriodSelectorWrapper, null, 4)}</pre>    
+}
+
+
