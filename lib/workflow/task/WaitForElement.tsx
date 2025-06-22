@@ -1,47 +1,46 @@
-import { TaskParamType, TaskType } from "@/types/task";
-import { WorkflowTask } from "@/types/workflow";
-import { EyeIcon, LucideProps, MousePointerClick, TextIcon } from "lucide-react";
+import { TaskParamType, TaskType, WorkflowTask } from "@/lib/types";
+import { EyeIcon, LucideProps, MousePointerClick } from "lucide-react";
 
-export const WaitForElementTask={
-    type: TaskType.WAIT_FOR_ELEMENT,
-    label:"Wait for element",
-    icon: (props)=> (<EyeIcon className="stroke-amber-400" {...props}/>),
-    isEntryPoint: false,
-    credits:1,
-    inputs:[
+export const WaitForElementTask = {
+  type: TaskType.WAIT_FOR_ELEMENT,
+  label: "Wait For Element",
+  icon: (props: LucideProps) => (
+    <EyeIcon className="stroke-amber-400" {...props} />
+  ),
+  isEntryPoint: false,
+  inputs: [
+    {
+      name: "Web page",
+      type: TaskParamType.BROWSE_INSTANCE,
+      required: true,
+    },
+    {
+      name: "Selector",
+      type: TaskParamType.STRING,
+      required: true,
+    },
+    {
+      name: "Visiblity",
+      type: TaskParamType.SELECT,
+      required: true,
+      hideHandle: true,
+      options: [
         {
-            name: "Web page",
-            type:TaskParamType.BROWSER_INSTANCE,
-            required: true,
-            variant: "textarea"
-        },{
-            name: "Selector",
-            type:TaskParamType.STRING,
-            required: true,
+          label: "Visible",
+          value: "visible",
         },
         {
-            name: "Visibility",
-            type:TaskParamType.SELECT,
-            hideHandle:true,
-            required: true,
-            options:[
-                {
-                    label:"Visible",
-                    value:"visible"
-                },
-                {
-                    label:"Hidden",
-                    value:"hidden"
-                }
-            ],
-        }
-
-    ] as const,
-    outputs:[
-        {
-            name: "Web page",
-            type:TaskParamType.BROWSER_INSTANCE
-        }
-    ] as const,
-} satisfies WorkflowTask
-
+          label: "Hidden",
+          value: "hidden",
+        },
+      ],
+    },
+  ] as const,
+  outputs: [
+    {
+      name: "Web page",
+      type: TaskParamType.BROWSE_INSTANCE,
+    },
+  ] as const,
+  credits: 1,
+} satisfies WorkflowTask;

@@ -1,28 +1,27 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { LaunchBrowserTask } from "../task/LaunchBrowser";
+import { ExecutionEnviornment } from "@/lib/types";
 import { FillInputTask } from "../task/FillInput";
-import { waitFor } from "@/lib/helper/waitFor";
 
-export async function FillInputExecutor(environment:ExecutionEnvironment<typeof FillInputTask>):Promise<boolean>{
+export async function FillInputExecutor(
+  enviornment: ExecutionEnviornment<typeof FillInputTask>
+): Promise<boolean> {
   try {
-    const selector = environment.getInput("Selector");
-    if(!selector){
-      environment.log.error("Missing input: Selector");
+    const selector = enviornment.getInput("Selector");
+    if (!selector) {
+      enviornment.log.error("input -> selector is not defined");
       return false;
     }
 
-    const value = environment.getInput("value");
-    if(!value){
-      environment.log.error("Missing input: value");
+    const value = enviornment.getInput("Value");
+    if (!value) {
+      enviornment.log.error("input -> value is not defined");
       return false;
     }
 
-    await environment.getPage()!.type(selector, value);
-    await waitFor(3000);
+    await enviornment.getPage()!.type(selector, value);
 
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

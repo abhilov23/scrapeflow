@@ -1,22 +1,22 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { FillInputTask } from "../task/FillInput";
-import { waitFor } from "@/lib/helper/waitFor";
-import { ClickElementTask } from "../task/ClickElement";
-import { NavigateUrlTask } from "../task/NavigateUrlTask";
+import { ExecutionEnviornment } from "@/lib/types";
+import { NavigateUrlTask } from "../task/NavigateUrl";
 
-export async function NavigateUrlExecutor(environment:ExecutionEnvironment<typeof NavigateUrlTask>):Promise<boolean>{
+export async function NavigateUrlExecutor(
+  enviornment: ExecutionEnviornment<typeof NavigateUrlTask>
+): Promise<boolean> {
   try {
-    const url = environment.getInput("URL");
-    if(!url){
-      environment.log.error("Missing input: Url");
+    const url = enviornment.getInput("Url");
+    if (!url) {
+      enviornment.log.error("input -> Url is not defined");
       return false;
     }
 
-    await environment.getPage()!.goto(url);
-    environment.log.info(`visited: ${url}`)
+    await enviornment.getPage()!.goto(url);
+    enviornment.log.info(`Visited ${url}`);
+
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

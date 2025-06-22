@@ -1,89 +1,93 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { ExtractDataWithAITask } from "../task/ExtractDataWithAI";
+import { ExecutionEnviornment } from "@/lib/types";
+import { ExtractDataWithAiTask } from "../task/ExtractDataWithAi";
 import prisma from "@/lib/prisma";
-import { symmetricDecrypt } from "@/lib/encryption";
-import OpenAI from "openai";
+import { symmetricDecrypt } from "@/lib/credential";
+import OpenAi from "openai";
 
-export async function ExtractDataWithAIExecutor(environment:ExecutionEnvironment<typeof ExtractDataWithAITask>):Promise<boolean>{
+export async function ExtractDataWithAiExecutor(
+  enviornment: ExecutionEnviornment<typeof ExtractDataWithAiTask>
+): Promise<boolean> {
   try {
-    const Credentials = environment.getInput("Credentials");
-    if(!Credentials){
-      environment.log.error("Missing input: Credentials");
+    const credentialId = enviornment.getInput("Credentials");
+    if (!credentialId) {
+      enviornment.log.error("input -> credentials is not defined");
+      return false;
+    }
+    const content = enviornment.getInput("Content");
+    if (!content) {
+      enviornment.log.error("input -> content is not defined");
+      return false;
+    }
+    const prompt = enviornment.getInput("Prompt");
+    if (!prompt) {
+      enviornment.log.error("input -> prompt is not defined");
       return false;
     }
 
-
-    const prompt = environment.getInput("Prompt");
-    if(!prompt){
-      environment.log.error("Missing input: Prompt");
-      return false;
-    }
-
-
-    const content = environment.getInput("Content");
-    if(!content){
-      environment.log.error("Missing input: Content");
-      return false;
-    }
-
-    
-    //Get credentials from database
     const credential = await prisma.credential.findUnique({
       where: {
-        id: Credentials
-      }
-    })
+        id: credentialId,
+      },
+    });
 
-    if(!credential){
-      environment.log.error("Credential not found");
+    if (!credential) {
+      enviornment.log.error("Credential no found");
       return false;
     }
 
     const plainCredentialValue = symmetricDecrypt(credential.value);
-    if(!plainCredentialValue){
-      environment.log.error("Failed to decrypt credential value");
+
+    if (!plainCredentialValue) {
+      enviornment.log.error("Cannot decrypt credential");
       return false;
     }
 
+    const openAi = new OpenAi({
+      apiKey: plainCredentialValue,
+    });
 
-   const openAI = new OpenAI({
-    apiKey: plainCredentialValue,
-  });
-     
-    const response = await openAI.chat.completions.create({
+    const response = await openAi.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
-          content: "You are a webscraper helper that extracts data fron HTML or text. You will be given a piece of text or HTML content as input and also the prompt with the data you want to extract. The response should always be only the extracted data as a JSON array or object, without any additional words or explanations. Analyze the input carefully and extract data precisely based on the prompt. If no data is found, return an empty JSON array. Work only with the provided content and ensure the output is always a valid JSON array without any surrounding text" ,
+          content:
+            "You are a webscraper helper that extracts data from HTML or text. You will be given a piece of text or HTML content as input and also the prompt with the data you have to extract. The response should always be only the extracted data as a JSON array or object, without any additional words or explanations. Analyze the input carefully and extract data precisely based on the prompt. If no data is found, return an empty JSON array. Work only with the provided content and ensure the output is always a valid JSON array without any surrounding text",
         },
         {
           role: "user",
           content: content,
-        },{
+        },
+        {
           role: "user",
-          content: prompt
-        }
+          content: prompt,
+        },
       ],
       temperature: 1,
     });
 
+    enviornment.log.info(
+      `Prompt tokens used: ${JSON.stringify(response.usage?.prompt_tokens)}`
+    );
 
-    console.log("@@TOKENS_USED", response.usage?.prompt_tokens);
-    console.log("@@TOKENS_USED", response.usage?.completion_tokens);
-    
-    const result = response.choices[0].message.content;
-    if(!result){
-      environment.log.error("Failed to extract data with AI");
+    enviornment.log.info(
+      `Completition tokens used: ${JSON.stringify(
+        response.usage?.completion_tokens
+      )}`
+    );
+
+    const result = response.choices[0].message?.content;
+
+    if (!result) {
+      enviornment.log.error("Empty response from AI");
       return false;
     }
 
-    environment.setOutput("Extracted Data", result);    
-
+    enviornment.setOutput("Extracted Data", JSON.stringify(result));
 
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

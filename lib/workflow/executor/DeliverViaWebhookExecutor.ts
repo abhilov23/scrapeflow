@@ -1,25 +1,22 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { FillInputTask } from "../task/FillInput";
-import { waitFor } from "@/lib/helper/waitFor";
-import { ClickElementTask } from "../task/ClickElement";
-import { DeliverViaWebhookTask } from "../task/DeliverViaWebhook";
+import { ExecutionEnviornment } from "@/lib/types";
+import { DeliverViaWebHookTask } from "../task/DeliverViaWebHook";
 
-export async function DeliverViaWebhookExecutor(environment:ExecutionEnvironment<typeof DeliverViaWebhookTask>):Promise<boolean>{
+export async function DeviverViaWebHookExecutor(
+  enviornment: ExecutionEnviornment<typeof DeliverViaWebHookTask>
+): Promise<boolean> {
   try {
-    const targetUrl = environment.getInput("Target URL");
-    if(!targetUrl){
-      environment.log.error("Input=>targetUrl not defined");
+    const targetUrl = enviornment.getInput("Target url");
+    if (!targetUrl) {
+      enviornment.log.error("input -> targetUrl is not defined");
+      return false;
+    }
+    const body = enviornment.getInput("Body");
+    if (!body) {
+      enviornment.log.error("input -> Body is not defined");
       return false;
     }
 
-     const body = environment.getInput("Body");
-    if(!body){
-      environment.log.error("Input=> body not defined");
-      return false;
-    }
-
-
-    const response = await fetch(targetUrl, {
+    const res = await fetch(targetUrl, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -27,18 +24,19 @@ export async function DeliverViaWebhookExecutor(environment:ExecutionEnvironment
       body: JSON.stringify(body),
     });
 
-    const statusCode = response.status;
-    if(statusCode !== 200){
-      environment.log.error(`Response status: ${statusCode}`);
+    const resStatus = res.status;
+
+    if (resStatus !== 200) {
+      enviornment.log.error(`Status Code ${resStatus}`);
       return false;
     }
 
-    const reponseBody = await response.json();
-    environment.log.info(`Response body: ${JSON.stringify(reponseBody)}`);
+    const resBody = await res.json();
+    enviornment.log.info(JSON.stringify(resBody, null, 4));
 
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

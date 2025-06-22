@@ -1,42 +1,42 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { LaunchBrowserTask } from "../task/LaunchBrowser";
-import { PageToHtmlTask } from "../task/PageToHtml";
-import { ExtractTextFromElement } from "../task/ExtractTextFromElement";
+import { ExecutionEnviornment } from "@/lib/types";
 import * as cheerio from "cheerio";
-export async function ExtractTextFromElementExecutor(environment:ExecutionEnvironment<typeof ExtractTextFromElement>):Promise<boolean>{
+import { ExtractTextFromElementTask } from "../task/ExtractTextFromElement";
+
+export async function ExtractTextFromElement(
+  enviornment: ExecutionEnviornment<typeof ExtractTextFromElementTask>
+): Promise<boolean> {
   try {
-    
-    const selector = environment.getInput("Selector")
-    if(!selector){
-      environment.log.error("selector is not provided");
+    const selector = enviornment.getInput("Selector");
+    if (!selector) {
+      enviornment.log.error("Selector not defined");
       return false;
     }
-    
-    const html = environment.getInput("Html")
-    if(!html){
-      environment.log.error("Html is not provided");
+
+    const html = enviornment.getInput("Html");
+    if (!html) {
+      enviornment.log.error("HTML not defined");
       return false;
     }
 
     const $ = cheerio.load(html);
     const element = $(selector);
 
-    if(!element){
-      environment.log.error("element is not provided");
+    if (!element) {
+      enviornment.log.error("Element not found on selector");
       return false;
-       }
+    }
 
-       const extractedText=$.text(element);
-       if(!extractedText){
-        environment.log.error("Element has no text");
-          return false;
-       }
-       
-       environment.setOutput("Extracted text", extractedText);
+    const extractedText = $.text(element);
+    if (!extractedText) {
+      enviornment.log.error("Element has no text");
+      return false;
+    }
+
+    enviornment.setOutput("Extracted Text", extractedText);
 
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

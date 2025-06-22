@@ -1,31 +1,31 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { waitFor } from "@/lib/helper/waitFor";
+import { ExecutionEnviornment } from "@/lib/types";
 import { WaitForElementTask } from "../task/WaitForElement";
 
-export async function WaitForElementExecutor(environment:ExecutionEnvironment<typeof WaitForElementTask>):Promise<boolean>{
+export async function WaitForElementExecutor(
+  enviornment: ExecutionEnviornment<typeof WaitForElementTask>
+): Promise<boolean> {
   try {
-    const selector = environment.getInput("Selector");
-    if(!selector){
-      environment.log.error("Missing input: Selector");
+    const selector = enviornment.getInput("Selector");
+    if (!selector) {
+      enviornment.log.error("input -> selector is not defined");
+      return false;
+    }
+    const visibility = enviornment.getInput("Visiblity");
+    if (!visibility) {
+      enviornment.log.error("input -> visibility is not defined");
       return false;
     }
 
-    const visibility = environment.getInput("Visibility");
-    if(!visibility){
-      environment.log.error("Missing input: Visibility");
-      return false;
-    }
-
-    await environment.getPage()!.waitForSelector(selector, {
+    await enviornment.getPage()!.waitForSelector(selector, {
       visible: visibility === "visible",
       hidden: visibility === "hidden",
-    })
-    
-    environment.log.info(`Waited for element: ${selector} to be ${visibility}`);
+    });
+
+    enviornment.log.info(`Element ${selector} became: ${visibility}`);
 
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

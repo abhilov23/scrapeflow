@@ -1,25 +1,25 @@
-import { TaskParamType, TaskType } from "@/types/task";
-import { WorkflowTask } from "@/types/workflow";
-import { LucideProps, MousePointerClick, SendIcon, TextIcon } from "lucide-react";
+import { TaskParamType, TaskType, WorkflowTask } from "@/lib/types";
+import { LucideProps, SendIcon } from "lucide-react";
 
-export const DeliverViaWebhookTask={
-    type: TaskType.DELIVER_VIA_WEBHOOK,
-    label:"Deliver Via Webhook",
-    icon: (props)=> (<SendIcon className="stroke-blue-400" {...props}/>),
-    isEntryPoint: false,
-    credits:1,
-    inputs:[
-        {
-            name: "Target URL",
-            type:TaskParamType.STRING,
-            required: true,
-            variant: "textarea"
-        },{
-            name: "Body",
-            type:TaskParamType.STRING,
-            required: true,
-        }
-    ] as const,
-    outputs:[] as const,
-} satisfies WorkflowTask
-
+export const DeliverViaWebHookTask = {
+  type: TaskType.DELIVER_VIA_WEBHOOK,
+  label: "Deliver via Webhook",
+  icon: (props: LucideProps) => (
+    <SendIcon className="stroke-blue-400" {...props} />
+  ),
+  isEntryPoint: false,
+  inputs: [
+    {
+      name: "Body",
+      type: TaskParamType.STRING,
+      required: true,
+    },
+    {
+      name: "Target url",
+      type: TaskParamType.STRING,
+      required: true,
+    },
+  ] as const,
+  outputs: [] as const,
+  credits: 1,
+} satisfies WorkflowTask;

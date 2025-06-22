@@ -1,24 +1,27 @@
-import { waitFor } from "@/lib/helper/waitFor";
-import { Environment } from "@/types/executor";
+import { ExecutionEnviornment } from "@/lib/types";
 import puppeteer from "puppeteer";
-import { ExecutionEnvironment } from "@/types/executor";
 import { LaunchBrowserTask } from "../task/LaunchBrowser";
 
-export async function LaunchBrowserExecutor(environment:ExecutionEnvironment<typeof LaunchBrowserTask>):Promise<boolean>{
+export async function LaunchBrowserExecutor(
+  enviornment: ExecutionEnviornment<typeof LaunchBrowserTask>
+): Promise<boolean> {
   try {
-    const websiteUrl = environment.getInput("Website Url");
+    const websiteUrl = enviornment.getInput("Website Url");
+    console.log(websiteUrl);
+
     const browser = await puppeteer.launch({
-        headless: false //for testing
-    })
-        environment.log.info("Browser started successfully")
-    environment.setBrowser(browser);
+      headless: true, // For dev_testing
+      args: ["--no-sandbox"],
+    });
+    enviornment.log.info("Browser started successfully");
+    enviornment.setBrowser(browser);
     const page = await browser.newPage();
     await page.goto(websiteUrl);
-    environment.setPage(page);
-    environment.log.info(`opened page at: ${websiteUrl}`)
+    enviornment.setPage(page);
+    enviornment.log.info(`Opened page at: ${websiteUrl}`);
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }

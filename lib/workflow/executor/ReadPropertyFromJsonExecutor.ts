@@ -1,34 +1,35 @@
-import { ExecutionEnvironment } from "@/types/executor";
-import { FillInputTask } from "../task/FillInput";
-import { waitFor } from "@/lib/helper/waitFor";
-import { ClickElementTask } from "../task/ClickElement";
-import { ReadPropertyFromJSONTask } from "../task/ReadPropertyFromJSON";
+import { ExecutionEnviornment } from "@/lib/types";
+import { ReadPropertyFromJsonTask } from "../task/ReadPropertyFromJson";
 
-export async function ReadPropertyFromExecutorJson(environment:ExecutionEnvironment<typeof ReadPropertyFromJSONTask>):Promise<boolean>{
+export async function ReadPropertyFromJsonExecutor(
+  enviornment: ExecutionEnviornment<typeof ReadPropertyFromJsonTask>
+): Promise<boolean> {
   try {
-    const JSONdata = environment.getInput("JSON");
-    if(!JSONdata){
-      environment.log.error("Missing input: json");
+    let jsonData = enviornment.getInput("JSON");
+    if (!jsonData) {
+      enviornment.log.error("input -> JSON is not defined");
+      return false;
     }
+    const propertyName = enviornment.getInput("Property name");
 
-       const PropertyName = environment.getInput("Property name");
-    if(!PropertyName){
-      environment.log.error("Missing input: Property Name");
+    if (!propertyName) {
+      enviornment.log.error("input -> Property is not defined");
+      return false;
     }
+    const json = JSON.parse(jsonData);
 
-    const json = JSON.parse(JSONdata);
-    const propertyValue = json[PropertyName];
-    if(propertyValue === undefined){
-      environment.log.error(`Property ${PropertyName} not found in JSON data`);
+    const propertValue = json[propertyName];
+
+    if (!propertValue) {
+      enviornment.log.error("Property not found");
       return false;
     }
 
+    enviornment.setOutput("Property Value", propertValue);
 
-
-    environment.setOutput("Property Value", propertyValue);    
     return true;
-  } catch (error:any) {
-    environment.log.error(error.message);
+  } catch (error: any) {
+    enviornment.log.error(error.message);
     return false;
   }
 }
