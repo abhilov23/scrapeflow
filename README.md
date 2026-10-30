@@ -1,4 +1,4 @@
-# Flow Scrape
+<img width="2800" height="560" alt="scrapeflow-hero-banner" src="https://github.com/user-attachments/assets/4472b7eb-2534-4bbf-92b9-bb2ed5c124d9" />
 
 This is a highly customizable web scraper built with Next.js 14, PostgreSQL, Prisma, and React Flow. It enables users to create, manage, and execute complex web scraping workflows with a visual, no-code/low-code interface. The scraper comes with advanced features such as AI-based data extraction
 
